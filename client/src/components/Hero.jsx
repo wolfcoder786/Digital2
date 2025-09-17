@@ -63,7 +63,7 @@ const Hero = ({ onNavigate }) => {
           />
           <FeatureCard
             icon={<Spray className="h-8 w-8" />}
-            title="Anshuman Gand Info"
+            title="Pesticides"
             description="Complete pesticide information & usage guidelines"
             color="from-orange-500 to-orange-600"
             onClick={() => onNavigate('pesticides')}
