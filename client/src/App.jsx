@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
+import StudyLearn from "./components/StudyLearn"; 
+import Pesticides from "./components/Pesticides";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -30,19 +32,10 @@ function App() {
       case "home":
         return <Hero onNavigate={handleNavigate} />;
       case "study":
-        return (
-          <div className="max-w-5xl mx-auto px-4 py-12">
-            <h1 className="text-3xl font-bold mb-6">Study & Learn 📖</h1>
-            <p className="text-gray-700">Access comprehensive agricultural resources, tutorials, and guides.</p>
-          </div>
-        );
+        return <StudyLearn />;
+        
       case "pesticides":
-        return (
-          <div className="max-w-5xl mx-auto px-4 py-12">
-            <h1 className="text-3xl font-bold mb-6">Pesticides Info 🧪</h1>
-            <p className="text-gray-700">Learn about pesticide usage, safety guidelines, and best practices.</p>
-          </div>
-        );
+        return  <Pesticides />; 
       case "machines":
         return (
           <div className="max-w-5xl mx-auto px-4 py-12">
