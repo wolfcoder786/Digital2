@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Features from "./components/features";
-
+import Footer from "./components/footer"
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -94,6 +94,8 @@ function App() {
 
       {/* Page Content */}
       <main className="pt-20">{renderPageContent()}</main>
+           {/* Footer */}
+      <Footer />
     </div>
   );
 }
