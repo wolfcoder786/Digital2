@@ -1,23 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, User, LogOut } from "lucide-react";
+import { Menu, X, User, LogOut, ShoppingCart } from "lucide-react";
 
-const Navbar = ({ currentPage, onNavigate, isAuthenticated, user, onLogout, onShowAuth }) => {
+const Navbar = ({
+  currentPage,
+  onNavigate,
+  isAuthenticated,
+  user,
+  onLogout,
+  onShowAuth,
+  cart = [], // ✅ accept cart as a prop
+}) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   const navItems = [
     { id: "home", label: "Home", color: "hover:text-orange-600" },
     { id: "study", label: "Study & Learn", color: "hover:text-green-600" },
-    { id: "pesticides", label: "Pesticides", color: "hover:text-blue-600" },
+    { id: "pesticides", label: "Pesticides", color: "hover:text-blue-600" }, // 🔥 match your App.jsx key
     { id: "machines", label: "Farming Machines", color: "hover:text-orange-600" },
     { id: "chatbot", label: "AI ChatBot", color: "hover:text-green-600" },
   ];
 
-  // ✅ Add scroll effect
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -60,6 +65,19 @@ const Navbar = ({ currentPage, onNavigate, isAuthenticated, user, onLogout, onSh
                 )}
               </button>
             ))}
+
+            {/* ✅ Cart Icon */}
+            <button
+              onClick={() => onNavigate("pesticide")}
+              className="relative flex items-center text-gray-700 hover:text-green-600 transition-colors"
+            >
+              <ShoppingCart className="h-5 w-5" />
+              {cart.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                  {cart.length}
+                </span>
+              )}
+            </button>
           </div>
 
           {/* Auth Section */}
@@ -122,6 +140,18 @@ const Navbar = ({ currentPage, onNavigate, isAuthenticated, user, onLogout, onSh
                   {item.label}
                 </button>
               ))}
+
+              {/* ✅ Mobile Cart */}
+              <button
+                onClick={() => {
+                  onNavigate("pesticide");
+                  setIsMobileMenuOpen(false);
+                }}
+                className="flex items-center space-x-2 w-full text-left px-3 py-2 text-gray-700 hover:bg-green-50 rounded-md"
+              >
+                <ShoppingCart className="h-5 w-5 text-green-600" />
+                <span>Cart ({cart.length})</span>
+              </button>
 
               <div className="pt-4 border-t border-gray-200">
                 {isAuthenticated ? (
