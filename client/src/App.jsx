@@ -6,7 +6,6 @@ import StudyLearn from "./pages/StudyLearn.jsx";
 import Pesticides from "./pages/Pesticides.jsx";
 import FarmingMachines from "./pages/FarmingMachines.jsx";
 import Cart from "./pages/Cart";
-import { Toaster } from "react-hot-toast";
 
 // Lazy-loaded heavy components
 const Features = lazy(() => import("./components/Features.jsx"));
@@ -55,35 +54,6 @@ function App() {
     setCurrentPage("home");
   };
 
-  // ✅ Cart Helpers
-  const addToCart = (product) => {
-    setCart((prevCart) => {
-      const existing = prevCart.find((item) => item.id === product.id);
-      if (existing) {
-        return prevCart.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      } else {
-        return [...prevCart, { ...product, quantity: 1 }];
-      }
-    });
-  };
-
-  const updateCartQuantity = (id, newQuantity) => {
-    if (newQuantity < 1) return removeFromCart(id);
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
-
-  const removeFromCart = (id) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
-  };
-
   const renderPageContent = () => {
     switch (currentPage) {
       case "home":
@@ -108,7 +78,7 @@ function App() {
       case "pesticides":
         return (
           <div className="pt-8">
-            <Pesticides cart={cart} setCart={setCart} addToCart={addToCart} />
+            <Pesticides cart={cart} setCart={setCart} />
           </div>
         );
 
@@ -122,12 +92,7 @@ function App() {
       case "cart": // ✅ Added Cart Page
         return (
           <div className="pt-8">
-            <Cart
-              cart={cart}
-              setCart={setCart}
-              updateCartQuantity={updateCartQuantity}
-              removeFromCart={removeFromCart}
-            />
+            <Cart cart={cart} setCart={setCart} />
           </div>
         );
 
@@ -164,7 +129,6 @@ function App() {
 
       {/* Footer */}
       <Footer />
-       <Toaster position="top-right" reverseOrder={false} />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { BookOpen, Video, Download, ExternalLink, Calendar, CloudSunRain, Sprout, Droplets, Layers, Shield } from "lucide-react";
+import { BookOpen, Video, Download, ExternalLink } from "lucide-react";
 
 const StudyLearn = () => {
   const resources = [
@@ -9,7 +9,7 @@ const StudyLearn = () => {
       type: "PDF Guide",
       language: "Malayalam/English",
       color: "from-green-500 to-green-600",
-      icon: <Calendar className="h-6 w-6" />,
+      icon: <BookOpen className="h-6 w-6" />,
     },
     {
       title: "Integrated Pest Management",
@@ -33,34 +33,50 @@ const StudyLearn = () => {
       type: "PDF Guide",
       language: "English",
       color: "from-purple-500 to-purple-600",
-      icon: <CloudSunRain className="h-6 w-6" />,
+      icon: <Download className="h-6 w-6" />,
     },
   ];
 
   const categories = [
     {
       name: "Crop Production",
-      topics: ["Paddy Cultivation", "Spice Farming", "Vegetable Gardening", "Fruit Cultivation"],
+      topics: [
+        "Paddy Cultivation",
+        "Spice Farming",
+        "Vegetable Gardening",
+        "Fruit Cultivation",
+      ],
       color: "bg-green-100 text-green-800",
-      icon: <Sprout className="h-6 w-6" />,
     },
     {
       name: "Soil Management",
-      topics: ["Soil Testing", "Fertilizer Application", "Organic Matter", "pH Management"],
+      topics: [
+        "Soil Testing",
+        "Fertilizer Application",
+        "Organic Matter",
+        "pH Management",
+      ],
       color: "bg-orange-100 text-orange-800",
-      icon: <Layers className="h-6 w-6" />,
     },
     {
       name: "Water Management",
-      topics: ["Irrigation Systems", "Water Conservation", "Drainage Systems", "Rainwater Harvesting"],
+      topics: [
+        "Irrigation Systems",
+        "Water Conservation",
+        "Drainage Systems",
+        "Rainwater Harvesting",
+      ],
       color: "bg-blue-100 text-blue-800",
-      icon: <Droplets className="h-6 w-6" />,
     },
     {
       name: "Plant Protection",
-      topics: ["Pest Identification", "Disease Management", "Biological Control", "Safe Pesticide Use"],
+      topics: [
+        "Pest Identification",
+        "Disease Management",
+        "Biological Control",
+        "Safe Pesticide Use",
+      ],
       color: "bg-red-100 text-red-800",
-      icon: <Shield className="h-6 w-6" />,
     },
   ];
 
@@ -107,36 +123,31 @@ const StudyLearn = () => {
           ))}
         </div>
 
-        {/* Learning Categories (Fixed Icons) */}
+        {/* Learning Categories */}
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-12">
           <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
             Learning Categories
           </h2>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 gap-8">
             {categories.map((category, index) => (
               <div
                 key={index}
-                className="relative border border-gray-200 rounded-xl p-6 hover:shadow-xl transition-all group hover:-translate-y-1"
+                className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow"
               >
-                {/* Icon Badge */}
-                <div
-                  className={`absolute -top-6 left-6 w-12 h-12 flex items-center justify-center rounded-full shadow-md ${category.color}`}
-                >
-                  {category.icon}
+                <div className="flex items-center mb-4">
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${category.color}`}
+                  >
+                    {category.name}
+                  </span>
                 </div>
-
-                <h3 className="text-lg font-semibold text-gray-800 mb-4 mt-6 text-center">
-                  {category.name}
-                </h3>
-
                 <div className="space-y-2">
                   {category.topics.map((topic, topicIndex) => (
                     <div
                       key={topicIndex}
-                      className="flex items-center text-gray-700 hover:text-green-600 cursor-pointer transition-colors"
+                      className="flex items-center text-gray-700 hover:text-blue-600 cursor-pointer transition-colors"
                     >
-                      <div className="w-2 h-2 bg-green-400 rounded-full mr-3 group-hover:scale-125 transition-transform"></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full mr-3"></div>
                       <span className="text-sm">{topic}</span>
                     </div>
                   ))}
