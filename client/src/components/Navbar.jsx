@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Menu, X, User, LogOut, ShoppingCart } from "lucide-react";
 
-const Navbar = ({
-  currentPage,
-  onNavigate,
-  isAuthenticated,
-  user,
-  onLogout,
-  cart = [],
-}) => {
+const Navbar = ({ currentPage, onNavigate, isAuthenticated, user, onLogout, cart = [] }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -65,7 +58,7 @@ const Navbar = ({
               </button>
             ))}
 
-            {/* ✅ Cart Icon */}
+            {/* Cart Icon */}
             <button
               onClick={() => onNavigate("cart")}
               className="relative flex items-center text-gray-700 hover:text-green-600 transition-colors"
@@ -85,9 +78,7 @@ const Navbar = ({
               <div className="flex items-center space-x-3">
                 <div className="flex items-center space-x-2 px-3 py-2 bg-green-50 rounded-lg">
                   <User className="h-4 w-4 text-green-600" />
-                  <span className="text-sm font-medium text-green-800">
-                    {user?.name || "Farmer"}
-                  </span>
+                  <span className="text-sm font-medium text-green-800">{user?.name || "Farmer"}</span>
                 </div>
                 <button
                   onClick={onLogout}
@@ -99,7 +90,7 @@ const Navbar = ({
               </div>
             ) : (
               <button
-                onClick={() => onNavigate("login")} // ✅ navigate to login page
+                onClick={() => onNavigate("login")}
                 className="bg-gradient-to-r from-orange-500 to-green-500 text-white px-6 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-green-600 transition-all duration-200 shadow-md hover:shadow-lg"
               >
                 Login / Sign Up
@@ -131,19 +122,17 @@ const Navbar = ({
                     setIsMobileMenuOpen(false);
                   }}
                   className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                    currentPage === item.id
-                      ? "text-blue-800 bg-blue-50"
-                      : `text-gray-700 ${item.color}`
+                    currentPage === item.id ? "text-blue-800 bg-blue-50" : `text-gray-700 ${item.color}`
                   }`}
                 >
                   {item.label}
                 </button>
               ))}
 
-              {/* ✅ Mobile Cart */}
+              {/* Mobile Cart */}
               <button
                 onClick={() => {
-                  onNavigate("cart"); // ✅ fixed
+                  onNavigate("cart");
                   setIsMobileMenuOpen(false);
                 }}
                 className="flex items-center space-x-2 w-full text-left px-3 py-2 text-gray-700 hover:bg-green-50 rounded-md"
@@ -152,6 +141,7 @@ const Navbar = ({
                 <span>Cart ({cart.length})</span>
               </button>
 
+              {/* Mobile Auth Section */}
               <div className="pt-4 border-t border-gray-200">
                 {isAuthenticated ? (
                   <div className="space-y-2">
@@ -168,7 +158,7 @@ const Navbar = ({
                 ) : (
                   <button
                     onClick={() => {
-                      onNavigate("login"); // ✅ navigate to login page
+                      onNavigate("login");
                       setIsMobileMenuOpen(false);
                     }}
                     className="w-full bg-gradient-to-r from-orange-500 to-green-500 text-white px-4 py-2 rounded-lg font-medium"
