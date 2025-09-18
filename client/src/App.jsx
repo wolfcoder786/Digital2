@@ -5,18 +5,13 @@ import Footer from "./components/Footer.jsx";
 import StudyLearn from "./pages/StudyLearn.jsx";
 import Pesticides from "./pages/Pesticides.jsx";
 import FarmingMachines from "./pages/FarmingMachines.jsx";
-import Cart from "./pages/Cart";
+import Cart from "./pages/Cart.jsx";
+import Login from "./pages/Login.jsx";
+import Signup from "./pages/Signup.jsx";
+// 👇 Import AI Chatbot Page
+// import Chatbot from "./pages/Chatbot.jsx"; 
 
-// Lazy-loaded heavy components
 const Features = lazy(() => import("./components/Features.jsx"));
-
-// Optional: NotFound component
-const NotFound = () => (
-  <div className="max-w-5xl mx-auto px-4 py-12 text-center">
-    <h1 className="text-3xl font-bold mb-4">Page Not Found ❌</h1>
-    <p className="text-gray-600">The page you are looking for does not exist.</p>
-  </div>
-);
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -24,26 +19,31 @@ function App() {
   const [user, setUser] = useState(null);
   const [cart, setCart] = useState([]);
 
-  // Load saved cart from localStorage on mount
+  // Load cart from localStorage
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
     if (savedCart) setCart(JSON.parse(savedCart));
   }, []);
 
-  // Save cart to localStorage whenever it changes
+  // Save cart to localStorage
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
   const handleNavigate = (page) => {
+    // 🔒 Restrict AI Chatbot page if not logged in
+    if (page === "chatbot" && !isAuthenticated) {
+      setCurrentPage("login"); 
+      return;
+    }
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleLogin = () => {
+  const handleLogin = (userData) => {
     setIsAuthenticated(true);
-    setUser({ name: "Farmer Ram" });
-    setCurrentPage("home");
+    setUser(userData);
+    setCurrentPage("home"); // ✅ Stay on main page after login
   };
 
   const handleLogout = () => {
@@ -51,7 +51,7 @@ function App() {
     setUser(null);
     setCart([]);
     localStorage.removeItem("cart");
-    setCurrentPage("home");
+    setCurrentPage("home"); // ✅ After logout, go back to homepage
   };
 
   const renderPageContent = () => {
@@ -60,74 +60,45 @@ function App() {
         return (
           <>
             <Hero onNavigate={handleNavigate} />
-            <Suspense
-              fallback={<div className="text-center py-12">Loading features...</div>}
-            >
+            <Suspense fallback={<div className="text-center py-12">Loading features...</div>}>
               <Features />
             </Suspense>
           </>
         );
-
       case "study":
-        return (
-          <div className="pt-8">
-            <StudyLearn />
-          </div>
-        );
-
+        return <StudyLearn />;
       case "pesticides":
-        return (
-          <div className="pt-8">
-            <Pesticides cart={cart} setCart={setCart} />
-          </div>
-        );
-
+        return <Pesticides cart={cart} setCart={setCart} />;
       case "machines":
-        return (
-          <div className="pt-8">
-            <FarmingMachines cart={cart} setCart={setCart} />
-          </div>
-        );
-
-      case "cart": // ✅ Added Cart Page
-        return (
-          <div className="pt-8">
-            <Cart cart={cart} setCart={setCart} />
-          </div>
-        );
-
+        return <FarmingMachines cart={cart} setCart={setCart} />;
+      case "cart":
+        return <Cart cart={cart} setCart={setCart} />;
       case "chatbot":
-        return (
-          <div className="max-w-5xl mx-auto px-4 py-12 text-center">
-            <h1 className="text-3xl font-bold mb-6">AI ChatBot 🤖</h1>
-            <p className="text-gray-700">
-              Ask questions in Malayalam or English and get instant AI-powered advice.
-            </p>
-          </div>
-        );
-
+        return isAuthenticated ? <Chatbot user={user} /> : <Login onLogin={handleLogin} onSwitchToSignup={() => setCurrentPage("signup")} />;
+      case "login":
+        return <Login onLogin={handleLogin} onSwitchToSignup={() => setCurrentPage("signup")} />;
+      case "signup":
+        return <Signup onSignup={handleLogin} onSwitchToLogin={() => setCurrentPage("login")} />;
       default:
-        return <NotFound />;
+        return <div className="text-center py-12">Page Not Found ❌</div>;
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navbar */}
+      {/* ✅ Navbar always visible */}
       <Navbar
         currentPage={currentPage}
         onNavigate={handleNavigate}
         isAuthenticated={isAuthenticated}
         user={user}
         onLogout={handleLogout}
-        onShowAuth={handleLogin}
         cart={cart}
+        onShowAuth={() => setCurrentPage("login")}
       />
 
-      {/* Page Content */}
       <main className="pt-20">{renderPageContent()}</main>
 
-      {/* Footer */}
       <Footer />
     </div>
   );

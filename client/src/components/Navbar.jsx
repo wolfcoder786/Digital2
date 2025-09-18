@@ -7,8 +7,7 @@ const Navbar = ({
   isAuthenticated,
   user,
   onLogout,
-  onShowAuth,
-  cart = [], // ✅ accept cart as a prop
+  cart = [],
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -16,7 +15,7 @@ const Navbar = ({
   const navItems = [
     { id: "home", label: "Home", color: "hover:text-orange-600" },
     { id: "study", label: "Study & Learn", color: "hover:text-green-600" },
-    { id: "pesticides", label: "Pesticides", color: "hover:text-blue-600" }, // 🔥 match your App.jsx key
+    { id: "pesticides", label: "Pesticides", color: "hover:text-blue-600" },
     { id: "machines", label: "Farming Machines", color: "hover:text-orange-600" },
     { id: "chatbot", label: "AI ChatBot", color: "hover:text-green-600" },
   ];
@@ -47,66 +46,66 @@ const Navbar = ({
             </span>
           </div>
 
-{/* Desktop Navigation */}
-<div className="hidden md:flex items-center space-x-8">
-  {navItems.map((item) => (
-    <button
-      key={item.id}
-      onClick={() => onNavigate(item.id)}
-      className={`relative px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-        currentPage === item.id
-          ? "text-blue-800"
-          : `text-gray-700 ${item.color}`
-      }`}
-    >
-      {item.label}
-      {currentPage === item.id && (
-        <span className="absolute left-0 -bottom-1 w-full h-0.5 bg-blue-600 rounded"></span>
-      )}
-    </button>
-  ))}
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => onNavigate(item.id)}
+                className={`relative px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                  currentPage === item.id
+                    ? "text-blue-800"
+                    : `text-gray-700 ${item.color}`
+                }`}
+              >
+                {item.label}
+                {currentPage === item.id && (
+                  <span className="absolute left-0 -bottom-1 w-full h-0.5 bg-blue-600 rounded"></span>
+                )}
+              </button>
+            ))}
 
-  {/* ✅ Cart Icon */}
-  <button
-    onClick={() => onNavigate("cart")} // 🔥 fixed from "pesticide" → "cart"
-    className="relative flex items-center text-gray-700 hover:text-green-600 transition-colors"
-  >
-    <ShoppingCart className="h-5 w-5" />
-    {cart.length > 0 && (
-      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
-        {cart.length}
-      </span>
-    )}
-  </button>
-</div>
+            {/* ✅ Cart Icon */}
+            <button
+              onClick={() => onNavigate("cart")}
+              className="relative flex items-center text-gray-700 hover:text-green-600 transition-colors"
+            >
+              <ShoppingCart className="h-5 w-5" />
+              {cart.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                  {cart.length}
+                </span>
+              )}
+            </button>
+          </div>
 
-{/* Auth Section */}
-<div className="hidden md:flex items-center space-x-4">
-  {isAuthenticated ? (
-    <div className="flex items-center space-x-3">
-      <div className="flex items-center space-x-2 px-3 py-2 bg-green-50 rounded-lg">
-        <User className="h-4 w-4 text-green-600" />
-        <span className="text-sm font-medium text-green-800">
-          {user?.name || "Farmer"}
-        </span>
-      </div>
-      <button
-        onClick={onLogout}
-        className="flex items-center space-x-1 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-      >
-        <LogOut className="h-4 w-4" />
-        <span className="text-sm">Logout</span>
-      </button>
-    </div>
-  ) : (
-    <button
-      onClick={onShowAuth}
-      className="bg-gradient-to-r from-orange-500 to-green-500 text-white px-6 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-green-600 transition-all duration-200 shadow-md hover:shadow-lg"
-    >
-      Login / Sign Up
-    </button>
-  )}
-</div>
+          {/* Auth Section */}
+          <div className="hidden md:flex items-center space-x-4">
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2 px-3 py-2 bg-green-50 rounded-lg">
+                  <User className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-800">
+                    {user?.name || "Farmer"}
+                  </span>
+                </div>
+                <button
+                  onClick={onLogout}
+                  className="flex items-center space-x-1 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span className="text-sm">Logout</span>
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => onNavigate("login")} // ✅ navigate to login page
+                className="bg-gradient-to-r from-orange-500 to-green-500 text-white px-6 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-green-600 transition-all duration-200 shadow-md hover:shadow-lg"
+              >
+                Login / Sign Up
+              </button>
+            )}
+          </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden">
@@ -144,7 +143,7 @@ const Navbar = ({
               {/* ✅ Mobile Cart */}
               <button
                 onClick={() => {
-                  onNavigate("pesticide");
+                  onNavigate("cart"); // ✅ fixed
                   setIsMobileMenuOpen(false);
                 }}
                 className="flex items-center space-x-2 w-full text-left px-3 py-2 text-gray-700 hover:bg-green-50 rounded-md"
@@ -169,7 +168,7 @@ const Navbar = ({
                 ) : (
                   <button
                     onClick={() => {
-                      onShowAuth();
+                      onNavigate("login"); // ✅ navigate to login page
                       setIsMobileMenuOpen(false);
                     }}
                     className="w-full bg-gradient-to-r from-orange-500 to-green-500 text-white px-4 py-2 rounded-lg font-medium"
