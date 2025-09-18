@@ -84,6 +84,7 @@ const Hero = ({ onNavigate }) => {
           <StatCard number="24/7" label="Available Support" />
           <StatCard number="95%" label="Accuracy Rate" />
         </div>
+        <h3>Numbers shown above are not true.They are used as Samples</h3>
       </div>
     </section>
   );
