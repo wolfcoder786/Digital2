@@ -7,8 +7,21 @@ const Cart = ({ cart, setCart }) => {
     setCart((prev) => prev.filter((_, i) => i !== index));
   };
 
+  // Update quantity
+  const updateQuantity = (index, newQty) => {
+    if (newQty < 1) return; // prevent 0 or negative
+    setCart((prev) =>
+      prev.map((item, i) =>
+        i === index ? { ...item, quantity: newQty } : item
+      )
+    );
+  };
+
   // Calculate total price
-  const total = cart.reduce((sum, item) => sum + item.price, 0);
+  const total = cart.reduce(
+    (sum, item) => sum + item.price * (item.quantity || 1),
+    0
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-orange-50 py-8">
@@ -32,6 +45,7 @@ const Cart = ({ cart, setCart }) => {
                   key={index}
                   className="flex items-center justify-between border-b pb-4"
                 >
+                  {/* Item Info */}
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">
                       {item.name}
@@ -40,16 +54,46 @@ const Cart = ({ cart, setCart }) => {
                       {item.malayalam} | {item.type}
                     </p>
                     <p className="text-green-600 font-bold mt-1">
-                      ₹{item.price}
+                      ₹{item.price}{" "}
+                      <span className="text-sm text-gray-500">
+                        x {item.quantity || 1}
+                      </span>
                     </p>
                   </div>
 
-                  <button
-                    onClick={() => removeFromCart(index)}
-                    className="p-2 rounded-full bg-red-100 hover:bg-red-200"
-                  >
-                    <Trash2 className="h-5 w-5 text-red-600" />
-                  </button>
+                  {/* Quantity Controls + Remove */}
+                  <div className="flex items-center space-x-3">
+                    {/* Quantity Buttons */}
+                    <div className="flex items-center border rounded-lg">
+                      <button
+                        onClick={() =>
+                          updateQuantity(index, (item.quantity || 1) - 1)
+                        }
+                        className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-l"
+                      >
+                        ➖
+                      </button>
+                      <span className="px-4 font-semibold">
+                        {item.quantity || 1}
+                      </span>
+                      <button
+                        onClick={() =>
+                          updateQuantity(index, (item.quantity || 1) + 1)
+                        }
+                        className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-r"
+                      >
+                        ➕
+                      </button>
+                    </div>
+
+                    {/* Remove Button */}
+                    <button
+                      onClick={() => removeFromCart(index)}
+                      className="p-2 rounded-full bg-red-100 hover:bg-red-200"
+                    >
+                      <Trash2 className="h-5 w-5 text-red-600" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -57,7 +101,9 @@ const Cart = ({ cart, setCart }) => {
             {/* Summary */}
             <div className="mt-6 border-t pt-4 flex justify-between items-center">
               <span className="text-xl font-semibold">Total:</span>
-              <span className="text-2xl font-bold text-green-600">₹{total}</span>
+              <span className="text-2xl font-bold text-green-600">
+                ₹{total}
+              </span>
             </div>
 
             {/* Checkout */}
