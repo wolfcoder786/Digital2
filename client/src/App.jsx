@@ -4,6 +4,8 @@ import Hero from "./components/Hero.jsx";
 import Footer from "./components/Footer.jsx";
 import StudyLearn from "./pages/StudyLearn.jsx";
 import Pesticides from "./pages/Pesticides.jsx";
+import FarmingMachines from "./pages/FarmingMachines.jsx";
+import Cart from "./pages/Cart";
 
 // Lazy-loaded heavy components
 const Features = lazy(() => import("./components/Features.jsx"));
@@ -58,7 +60,9 @@ function App() {
         return (
           <>
             <Hero onNavigate={handleNavigate} />
-            <Suspense fallback={<div className="text-center py-12">Loading features...</div>}>
+            <Suspense
+              fallback={<div className="text-center py-12">Loading features...</div>}
+            >
               <Features />
             </Suspense>
           </>
@@ -80,11 +84,15 @@ function App() {
 
       case "machines":
         return (
-          <div className="max-w-5xl mx-auto px-4 py-12 text-center">
-            <h1 className="text-3xl font-bold mb-6">Farming Machines 🚜</h1>
-            <p className="text-gray-700">
-              Explore modern farming equipment and technology for efficient agriculture.
-            </p>
+          <div className="pt-8">
+            <FarmingMachines cart={cart} setCart={setCart} />
+          </div>
+        );
+
+      case "cart": // ✅ Added Cart Page
+        return (
+          <div className="pt-8">
+            <Cart cart={cart} setCart={setCart} />
           </div>
         );
 
