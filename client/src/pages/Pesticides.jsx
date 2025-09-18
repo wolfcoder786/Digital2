@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { Search, Shield, Leaf, ShoppingCart } from "lucide-react";
+import toast from "react-hot-toast";
 
-const Pesticides = ({ cart, setCart }) => {
+const Pesticides = ({ cart, setCart, addToCart }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const pesticides = [
     {
+      id: 1,
       name: "Copper Oxychloride",
       malayalam: "കോപ്പർ ഓക്സിക്ലോറൈഡ്",
       type: "Fungicide",
@@ -18,6 +20,7 @@ const Pesticides = ({ cart, setCart }) => {
       price: 350,
     },
     {
+      id: 2,
       name: "Neem Oil",
       malayalam: "വേപ്പെണ്ണ",
       type: "Bio-Pesticide",
@@ -29,6 +32,7 @@ const Pesticides = ({ cart, setCart }) => {
       price: 220,
     },
     {
+      id: 3,
       name: "Carbendazim",
       malayalam: "കാർബെൻഡാസിം",
       type: "Systemic Fungicide",
@@ -40,6 +44,7 @@ const Pesticides = ({ cart, setCart }) => {
       price: 180,
     },
     {
+      id: 4,
       name: "Imidacloprid",
       malayalam: "ഇമിഡാക്ലോപ്രിഡ്",
       type: "Insecticide",
@@ -51,6 +56,7 @@ const Pesticides = ({ cart, setCart }) => {
       price: 500,
     },
     {
+      id: 5,
       name: "Trichoderma",
       malayalam: "ട്രൈക്കോഡെർമ",
       type: "Bio-Fungicide",
@@ -62,6 +68,7 @@ const Pesticides = ({ cart, setCart }) => {
       price: 260,
     },
     {
+      id: 6,
       name: "Mancozeb",
       malayalam: "മാൻകോസെബ്",
       type: "Contact Fungicide",
@@ -120,11 +127,6 @@ const Pesticides = ({ cart, setCart }) => {
     return "text-red-600 bg-red-100";
   };
 
-  const addToCart = (product) => {
-    setCart((prev) => [...prev, product]);
-    alert(`${product.name} added to cart 🛒`);
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-green-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -140,7 +142,9 @@ const Pesticides = ({ cart, setCart }) => {
           </div>
           <div className="ml-4 flex items-center space-x-2">
             <ShoppingCart className="h-7 w-7 text-green-600" />
-            <span className="text-sm font-medium">{cart.length} items</span>
+            <span className="text-sm font-medium">
+              {cart.reduce((sum, item) => sum + (item.quantity || 1), 0)} items
+            </span>
           </div>
         </div>
 
@@ -151,7 +155,7 @@ const Pesticides = ({ cart, setCart }) => {
               <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search pesticides, crops, or diseases..."
+                placeholder="Search pesticides by name, crop, or disease..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -178,9 +182,9 @@ const Pesticides = ({ cart, setCart }) => {
 
         {/* Pesticides Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {filteredPesticides.map((pesticide, index) => (
+          {filteredPesticides.map((pesticide) => (
             <div
-              key={index}
+              key={pesticide.id}
               className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6"
             >
               <div className="flex items-center justify-between mb-4">
@@ -228,7 +232,19 @@ const Pesticides = ({ cart, setCart }) => {
               </div>
 
               <button
-                onClick={() => addToCart(pesticide)}
+                onClick={() => {
+                  addToCart(pesticide); // use parent function
+                  toast.success(`${pesticide.name} added to cart 🛒`, {
+                    style: {
+                      borderRadius: "10px",
+                      background: "#fff",
+                      color: "#16a34a",
+                      fontWeight: "600",
+                      padding: "12px 16px",
+                    },
+                    icon: "🌱",
+                  });
+                }}
                 className="w-full bg-green-500 text-white py-2 rounded-lg font-medium hover:bg-green-600 transition-colors"
               >
                 Buy Now
