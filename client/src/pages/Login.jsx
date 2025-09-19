@@ -29,16 +29,6 @@ const Login = ({ onLogin, onSwitchToSignup }) => {
     }
   };
 
-  // ✅ Guest login handler
-  const handleGuestLogin = () => {
-    const guestUser = {
-      name: "Guest",
-      email: null,
-      role: "guest",
-    };
-    onLogin(guestUser); // no token saved, just guest session
-  };
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-orange-500 via-white to-green-500">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md border-t-8 border-orange-600">
@@ -77,25 +67,15 @@ const Login = ({ onLogin, onSwitchToSignup }) => {
           </button>
         </form>
 
-        <div className="mt-4 space-y-3">
-          <p className="text-sm text-gray-600 text-center">
-            Don’t have an account?{" "}
-            <button
-              className="text-orange-600 font-semibold"
-              onClick={onSwitchToSignup}
-            >
-              Sign Up
-            </button>
-          </p>
-
-          {/* ✅ Continue as Guest button */}
+        <p className="mt-4 text-sm text-gray-600 text-center">
+          Don’t have an account?{" "}
           <button
-            onClick={handleGuestLogin}
-            className="w-full py-2 border border-gray-400 text-gray-700 rounded-lg font-medium hover:bg-gray-100"
+            className="text-orange-600 font-semibold"
+            onClick={onSwitchToSignup}
           >
-            Continue as Guest
+            Sign Up
           </button>
-        </div>
+        </p>
       </div>
     </div>
   );
