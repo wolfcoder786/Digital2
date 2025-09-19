@@ -8,7 +8,7 @@ import FarmingMachines from "./pages/FarmingMachines.jsx";
 import Cart from "./pages/Cart.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
-
+import Chatbot from "./pages/Chatbot.jsx"; // ✅ Added chatbot page
 
 const Features = lazy(() => import("./components/Features.jsx"));
 
@@ -52,7 +52,7 @@ function App() {
   };
 
   const handleNavigate = (page) => {
-    const authRequiredPages = ["chatbot"]; // only chatbot requires login
+    const authRequiredPages = ["chatbot"]; // ✅ only chatbot requires login
     if (authRequiredPages.includes(page) && !isAuthenticated) {
       setCurrentPage("login");
       return;
@@ -66,7 +66,11 @@ function App() {
     if (qty <= 0) {
       setCart(cart.filter((item) => item.id !== id));
     } else {
-      setCart(cart.map((item) => (item.id === id ? { ...item, quantity: qty } : item)));
+      setCart(
+        cart.map((item) =>
+          item.id === id ? { ...item, quantity: qty } : item
+        )
+      );
     }
   };
 
@@ -78,7 +82,9 @@ function App() {
     home: (
       <>
         <Hero onNavigate={handleNavigate} />
-        <Suspense fallback={<div className="text-center py-12">Loading features...</div>}>
+        <Suspense
+          fallback={<div className="text-center py-12">Loading features...</div>}
+        >
           <Features />
         </Suspense>
       </>
@@ -94,9 +100,19 @@ function App() {
         removeFromCart={removeFromCart}
       />
     ),
-
-    login: <Login onLogin={handleLogin} onSwitchToSignup={() => setCurrentPage("signup")} />,
-    signup: <Signup onSignup={handleLogin} onSwitchToLogin={() => setCurrentPage("login")} />,
+    chatbot: <Chatbot />, // ✅ Added Chatbot page
+    login: (
+      <Login
+        onLogin={handleLogin}
+        onSwitchToSignup={() => setCurrentPage("signup")}
+      />
+    ),
+    signup: (
+      <Signup
+        onSignup={handleLogin}
+        onSwitchToLogin={() => setCurrentPage("login")}
+      />
+    ),
   };
 
   return (
