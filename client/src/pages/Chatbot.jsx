@@ -67,62 +67,87 @@ const ChatBot = ({ user }) => {
 
   const recognitionRef = useRef(null);
 
-  // Load chat history
-  useEffect(() => {
-    const fetchChatHistory = async () => {
-      if (user?._id) {
-        try {
-          const res = await fetch("http://localhost:5000/api/chat", {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          });
-          const data = await res.json();
-          setMessages(
-            data.length > 0
-              ? data.map((msg) => ({
-                  ...msg,
-                  id: msg._id || Date.now().toString(),
-                }))
-              : [
-                  {
-                    id: "1",
-                    text: `നമസ്കാരം ${
-                      user?.name || "കർഷകാ"
-                    }! I am your Digital Krishi Officer. How can I help you today?`,
-                    sender: "bot",
-                    timestamp: new Date(),
-                  },
-                ]
-          );
-        } catch (err) {
-          console.error("Error fetching chat history:", err);
-        }
-      } else {
-        const saved = localStorage.getItem(storageKey);
-        setMessages(
-          saved
-            ? JSON.parse(saved)
-            : [
-                {
-                  id: "1",
-                  text: "Hello Guest! 👋 How can I help you today?",
-                  sender: "bot",
-                  timestamp: new Date(),
-                },
-              ]
-        );
-      }
-    };
-    fetchChatHistory();
-  }, [user?._id]);
+ // Load chat history
+useEffect(() => {
+  const fetchChatHistory = async () => {
+    // ✅ Always try restore from cache first
+    const key = user?._id ? `chatCache_${user._id}` : storageKey;
+    const cached = localStorage.getItem(key);
+    if (cached) {
+      setMessages(JSON.parse(cached));
+    }
 
-  // Save guest chat to localStorage
+    if (user?._id) {
+      try {
+        const res = await fetch("http://localhost:5000/api/chat", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        const data = await res.json();
+
+        if (data.length > 0) {
+          setMessages(
+            data.map((msg) => ({
+              ...msg,
+              id: msg._id || Date.now().toString(),
+            }))
+          );
+        } else if (!cached) {
+          // only set default if nothing cached
+          setMessages([
+            {
+              id: "1",
+              text: `നമസ്കാരം ${
+                user?.name || "കർഷകാ"
+              }! I am your Digital Krishi Officer. How can I help you today?`,
+              sender: "bot",
+              timestamp: new Date(),
+            },
+          ]);
+        }
+      } catch (err) {
+        console.error("Error fetching chat history:", err);
+      }
+    } else {
+      // Guest mode (if no cached messages)
+      if (!cached) {
+        setMessages([
+          {
+            id: "1",
+            text: "Hello Guest! 👋 How can I help you today?",
+            sender: "bot",
+            timestamp: new Date(),
+          },
+        ]);
+      }
+    }
+  };
+  fetchChatHistory();
+}, [user?._id, storageKey]);
+
+
+    // ✅ Always persist messages (guest & logged-in)
   useEffect(() => {
-    if (!user?._id) {
-      localStorage.setItem(storageKey, JSON.stringify(messages));
+    if (messages.length > 0) {
+      const key = user?._id ? `chatCache_${user._id}` : storageKey;
+      localStorage.setItem(key, JSON.stringify(messages));
     }
   }, [messages, user?._id, storageKey]);
+
+  // ✅ Keep messages when switching tabs
+  useEffect(() => {
+    const handleStorageChange = () => {
+      if (!user?._id) {
+        const saved = localStorage.getItem(storageKey);
+        if (saved) {
+          setMessages(JSON.parse(saved));
+        }
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, [user?._id, storageKey]);
 
   // Auto-scroll
   useEffect(() => {
@@ -145,6 +170,17 @@ const ChatBot = ({ user }) => {
       console.error("Error saving chat:", err);
     }
   };
+
+    // Save messages before component unmount (when switching away)
+  useEffect(() => {
+    return () => {
+      if (messages.length > 0) {
+        const key = user?._id ? `chatCache_${user._id}` : storageKey;
+        localStorage.setItem(key, JSON.stringify(messages));
+      }
+    };
+  }, [messages, user?._id, storageKey]);
+
 
   // Get bot response
   const fetchBotResponse = async (userMessage) => {
