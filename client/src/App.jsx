@@ -8,7 +8,7 @@ import FarmingMachines from "./pages/FarmingMachines.jsx";
 import Cart from "./pages/Cart.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
-
+import Chatbot from "./pages/Chatbot.jsx"; // ✅ import your chatbot page
 
 const Features = lazy(() => import("./components/Features.jsx"));
 
@@ -25,34 +25,47 @@ function App() {
   const [user, setUser] = useState(null);
   const [cart, setCart] = useState([]);
 
-  // Load cart from localStorage
+  // ✅ Load cart from localStorage
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
     if (savedCart) setCart(JSON.parse(savedCart));
   }, []);
 
-  // Save cart to localStorage on change
+  // ✅ Save cart to localStorage on change
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  // Login handler (used for login or after signup)
+  useEffect(() => {
+  if (!isAuthenticated && currentPage === "chatbot") {
+    setCurrentPage("login");
+  }
+}, [isAuthenticated, currentPage]);
+
+
+  // ✅ Login handler
   const handleLogin = (userData) => {
     setIsAuthenticated(true);
     setUser(userData);
-    setCurrentPage("home"); // always go to landing page after login/signup
-  };
-
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    setUser(null);
-    setCart([]);
-    localStorage.removeItem("cart");
     setCurrentPage("home");
   };
 
+const handleLogout = () => {
+  setIsAuthenticated(false);
+  setUser(null);
+  setCart([]);
+  localStorage.removeItem("cart");
+  localStorage.removeItem("chatMessages_guest");
+  if (user?._id) {
+    localStorage.removeItem(`chatMessages_${user._id}`);
+  }
+  setCurrentPage("home");
+};
+
+
+  // ✅ Page navigation
   const handleNavigate = (page) => {
-    const authRequiredPages = ["chatbot"]; // only chatbot requires login
+    const authRequiredPages = ["chatbot"]; // chatbot requires login
     if (authRequiredPages.includes(page) && !isAuthenticated) {
       setCurrentPage("login");
       return;
@@ -61,7 +74,7 @@ function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Cart management functions
+  // ✅ Cart management
   const updateCartQuantity = (id, qty) => {
     if (qty <= 0) {
       setCart(cart.filter((item) => item.id !== id));
@@ -74,6 +87,7 @@ function App() {
     setCart(cart.filter((item) => item.id !== id));
   };
 
+  // ✅ Pages
   const pages = {
     home: (
       <>
@@ -94,9 +108,15 @@ function App() {
         removeFromCart={removeFromCart}
       />
     ),
-
     login: <Login onLogin={handleLogin} onSwitchToSignup={() => setCurrentPage("signup")} />,
     signup: <Signup onSignup={handleLogin} onSwitchToLogin={() => setCurrentPage("login")} />,
+     chatbot: (
+    <Chatbot
+      key={user ? user._id : "guest"} // 👈 forces refresh when user changes
+      user={user}
+      isAuthenticated={isAuthenticated}
+    />
+  ) // ✅ added chatbot page
   };
 
   return (
